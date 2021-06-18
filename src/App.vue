@@ -8,7 +8,7 @@
   <h2>About</h2>
 
   <p>
-    An animation of the radius <var>r</var> rotating along the unit circle and creating an angle <var class="color-angle">&theta;</var>. The <var class="color-cosine">x</var> value, which equals <code class="color-cosine">cos(&theta;)</code> and the <var class="color-sine">y</var> value, which equals <code class="color-sine">sin(&theta;)</code>, will also be indicated.
+    An animation of the <span class="color-radius">radius <var>r</var></span> rotating along the <span class="color-unit-circle">unit circle</span> and creating an <span class="color-angle">angle <var>&theta;</var></span>. The <span class="color-cosine"><var>x</var> value</span>, which equals <code class="color-cosine">cos(&theta;)</code> and the <span class="color-sine"><var>y</var> value</span>, which equals <code class="color-sine">sin(&theta;)</code>, will also be indicated.
   </p>
 
   <p>
@@ -16,7 +16,7 @@
   </p>
 
   <p>
-    Implemented with the help of <a href="https://v3.vuejs.org">Vue</a> <var>{{ version }}</var>.
+    Implemented with the help of <a href="https://v3.vuejs.org">Vue</a> <var>{{ version }}</var>. First version created in June 2021.
   </p>
 
   <footer>
@@ -52,6 +52,7 @@ export default defineComponent({
     console.info("Vue version", version);
 
     const vueAppVersion = process.env.VUE_APP_VERSION;
+    console.info('App version', vueAppVersion);
 
     return {
       version,
@@ -87,6 +88,14 @@ h2 {
 
 .color-cosine {
   color: #f66;
+}
+
+.color-radius {
+  color: #dd0;
+}
+
+.color-unit-circle {
+  color: #0dd;
 }
 
 .math {

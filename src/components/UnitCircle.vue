@@ -24,7 +24,7 @@
       </div>
 
       <div>
-        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-1" max="6" />
+        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-1" max="7" />
         <label for="rpmFactor">
           Velocity: 2<sup>{{ rpmFactor }}</sup> = {{ rpm }} rounds per minute (logarithmic scale)
         </label>
@@ -124,10 +124,12 @@ export default defineComponent({
       let cx: CanvasRenderingContext2D;
 
       const radius = 100;
+      const radiusAngle = radius / 4;
       const origoX = 650;
       const origoY = 150;
       const axisLength = 260;
       const axisArrowSize = 5;
+      const waveSize = 2;
 
       const waveStartX = 500;
       const waveEndX = 20;
@@ -178,27 +180,27 @@ export default defineComponent({
         x: number;
         y: number;
         y2: number;
-        angle: number;
+        angleInRadians: number;
         timestamp: number;
       }
 
       function calculateState(timestamp: number): State {
-        const currentAngle = calculateCurrentAngleInRadians(timestamp);
+        const currentAngleInRadians = calculateCurrentAngleInRadians(timestamp);
 
-        const cos = Math.cos(currentAngle);
-        const sin = Math.sin(currentAngle);
+        const cos = Math.cos(currentAngleInRadians);
+        const sin = Math.sin(currentAngleInRadians);
 
         const x = origoX + radius * cos;
-        const y = origoY - radius * sin;
-        const y2 = origoY - radius * cos;
+        const ySin = origoY - radius * sin;
+        const yCos = origoY - radius * cos;
 
         return {
           cos: cos,
           sin: sin,
           x: x,
-          y: y,
-          y2: y2,
-          angle: currentAngle,
+          y: ySin,
+          y2: yCos,
+          angleInRadians: currentAngleInRadians,
           timestamp: timestamp
         } as State;
       }
@@ -319,20 +321,15 @@ export default defineComponent({
 
         cx.beginPath();
 
-        const startAngle = state.angle;
+        const startAngleInRadians = state.angleInRadians;
 
         for (let x = waveStartX; x > waveEndX; x--) {
 
-          const currentAngle = startAngle - Math.PI * 2 / 200 * (waveStartX - x);
+          const currentAngleInRadians = startAngleInRadians - Math.PI * 2 / 200 * (waveStartX - x);
 
-          let y;
-          if (sine) {
-            y = origoY - Math.sin(currentAngle) * radius; // Showing sin(t)!
-          } else {
-            y = origoY - Math.cos(currentAngle) * radius; // Showing cos(t)!
-          }
+          const y = origoY - (sine ? Math.sin(currentAngleInRadians) : Math.cos(currentAngleInRadians)) * radius;
 
-          cx.fillRect(x, y, 2, 2);
+          cx.fillRect(x, y, waveSize, waveSize);
         }
 
         cx.fill();
@@ -389,9 +386,9 @@ export default defineComponent({
         cx.arc(
             origoX,
             origoY,
-            20,
+            radiusAngle,
             0,
-            Math.PI * 2 - state.angle,
+            Math.PI * 2 - state.angleInRadians,
             true
         );
 
