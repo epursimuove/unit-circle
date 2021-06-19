@@ -10,7 +10,6 @@ describe("UnitCircle.vue", () => {
         expect(wrapper.html()).toContain("Show cosine curve");
         expect(wrapper.html()).toContain("Show angle");
         expect(wrapper.html()).toContain("Velocity");
-        expect(wrapper.html()).toContain("Revolutions");
         expect(wrapper.html()).toContain("canvas");
     });
 });

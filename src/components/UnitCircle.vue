@@ -24,9 +24,11 @@
       </div>
 
       <div>
-        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-1" max="7" />
+        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-8" max="8" />
         <label for="rpmFactor">
-          Velocity: 2<sup>{{ rpmFactor }}</sup> = {{ rpm }} rounds per minute (logarithmic scale)
+          Velocity (rounds per minute (logarithmic scale)):
+          <span v-if="rpm !== 0">{{ rpm }}</span>
+          <strong v-else>PAUSED</strong>
         </label>
       </div>
     </div>
@@ -52,7 +54,7 @@
 
       <div class="math">
 
-        1
+        <span class="color-radius">1</span>
 
         = <var class="color-cosine">x</var><sup>2</sup> + <var class="color-sine">y</var><sup>2</sup>
 
@@ -60,10 +62,6 @@
 
         = {{ toFixed(Math.pow(Math.cos(currentAngleInRadians), 2)) }} + {{ toFixed(Math.pow(Math.sin(currentAngleInRadians), 2)) }}
 
-      </div>
-
-      <div>
-        Revolutions: {{ revolutions }}
       </div>
 
       <div>
@@ -88,11 +86,20 @@ export default defineComponent({
     const showCosineCurve = ref(true);
     const showAngle = ref(true);
     const rpmFactor = ref(4);
-    const revolutions = ref(0);
     const currentAngleInRadians = ref(0);
     const currentTimestamp = ref(0);
 
-    const rpm = computed(() => rpmFactor.value >= 0 ? Math.pow(2, rpmFactor.value) : 0);
+    const rpmFactorPrettified = computed(() =>
+        rpmFactor.value > 0 ? rpmFactor.value - 1 :
+            rpmFactor.value < 0 ? Math.abs(rpmFactor.value) - 1 :
+                0
+    );
+
+    const rpm = computed(() =>
+        rpmFactor.value === 0 ?
+            0 :
+            Math.sign(rpmFactor.value) * Math.pow(2, rpmFactorPrettified.value)
+    );
 
     const timeElapsedInSeconds = computed(() => toFixed(currentTimestamp.value / 1000, 0));
 
@@ -138,7 +145,7 @@ export default defineComponent({
       const colorUnitCircle = "#0dd";
       const colorRadius = "#dd0";
       const colorAngle = "#6a6";
-      const colorPoint = "#333";
+      const colorPoint = colorRadius; //"#333";
       const colorPointX = "#f66";
       const colorPointY = "#66f";
       const colorSinAngle = "#66f";
@@ -165,10 +172,7 @@ export default defineComponent({
         const progressForAngle = oneLapInRadians * currentRevolution;
 
         currentAngleInRadians.value = previousAngleInRadians + progressForAngle;
-        currentAngleInRadians.value %= oneLapInRadians;
-        if (currentAngleInRadians.value < previousAngleInRadians) {
-          revolutions.value++;
-        }
+        currentAngleInRadians.value = (currentAngleInRadians.value + oneLapInRadians) % oneLapInRadians;
         previousAngleInRadians = currentAngleInRadians.value;
 
         return currentAngleInRadians.value;
@@ -494,10 +498,10 @@ export default defineComponent({
       showCosineCurve,
       showAngle,
       rpmFactor,
+      rpmFactorPrettified,
       rpm,
       currentAngleInRadians,
       currentAngleInDegrees,
-      revolutions,
 
       timeElapsedInSeconds,
 
