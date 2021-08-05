@@ -433,11 +433,12 @@ export default defineComponent({
           xFrom: number,
           yFrom: number,
           xTo: number,
-          yTo: number
+          yTo: number,
+          lineWidth: number
       ) {
 
         cx.strokeStyle = color;
-        cx.lineWidth = 2.0;
+        cx.lineWidth = lineWidth;
         cx.setLineDash([]);
 
         cx.beginPath();
@@ -450,11 +451,13 @@ export default defineComponent({
       }
 
       function drawCosHelper(state: State) {
-        drawLine(colorCosAngle, state.x, state.y, origoX, state.y);
+        drawLine(colorCosAngle, state.x, origoY, origoX, origoY, 4);
+        drawLine(colorCosAngle, state.x, state.y, origoX, state.y, 1);
       }
 
       function drawSinHelper(state: State) {
-        drawLine(colorSinAngle, state.x, state.y, state.x, origoY);
+        drawLine(colorSinAngle, origoX, state.y, origoX, origoY, 4);
+        drawLine(colorSinAngle, state.x, state.y, state.x, origoY, 1);
       }
 
       function drawDynamicContent(state: State) {
