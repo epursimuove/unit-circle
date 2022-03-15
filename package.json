@@ -1,6 +1,6 @@
 {
   "name": "unit-circle",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,8 +9,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "core-js": "^3.14.0",
-    "vue": "^3.1.5"
+    "core-js": "^3.21.1",
+    "vue": "^3.2.31"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
