@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, type ComputedRef, onMounted, type Ref, ref } from "vue";
 
-const showSineCurve = ref(true);
-const showCosineCurve = ref(true);
-const showAngle = ref(true);
-const rpmFactor = ref(4);
-const currentAngleInRadians = ref(0);
-const currentTimestamp = ref(0);
+const showSineCurve: Ref<boolean> = ref(true);
+const showCosineCurve: Ref<boolean> = ref(true);
+const showAngle: Ref<boolean> = ref(true);
+const rpmFactor: Ref<number> = ref(4);
+const currentAngleInRadians: Ref<number> = ref(0);
+const currentTimestamp: Ref<number> = ref(0);
 
-const rpmFactorPrettified = computed(() =>
+const rpmFactorPrettified: ComputedRef<number> = computed(() =>
   rpmFactor.value > 0
     ? rpmFactor.value - 1
     : rpmFactor.value < 0
@@ -16,13 +16,15 @@ const rpmFactorPrettified = computed(() =>
       : 0,
 );
 
-const rpm = computed(() =>
+const rpm: ComputedRef<number> = computed(() =>
   rpmFactor.value === 0 ? 0 : Math.sign(rpmFactor.value) * Math.pow(2, rpmFactorPrettified.value),
 );
 
-const timeElapsedInSeconds = computed(() => toFixed(currentTimestamp.value / 1000, 0));
+const timeElapsedInSeconds: ComputedRef<string> = computed(() =>
+  toFixed(currentTimestamp.value / 1000, 0),
+);
 
-const currentAngleInDegrees = computed(() =>
+const currentAngleInDegrees: ComputedRef<string> = computed(() =>
   toFixed((currentAngleInRadians.value * 180) / Math.PI, 0),
 );
 
@@ -42,7 +44,7 @@ onMounted(() => {
   init();
 });
 
-const init = () => {
+const init: () => void = () => {
   console.log("init()");
 
   const canvasUnitCircle = document.getElementById("canvasUnitCircle") as HTMLCanvasElement;
@@ -52,6 +54,9 @@ const init = () => {
 
   const radius = 100;
   const radiusAngle = radius / 4;
+  const radiusMarker = 5;
+  const lineWidthThickLineHelper = 4;
+  const lineWidthThinLineHelper = 1;
   const origoX = 650;
   const origoY = 150;
   const axisLength = 260;
@@ -75,11 +80,11 @@ const init = () => {
   let previousAngleInRadians = 0;
   let previousTimestamp = 0;
 
-  function clearCanvas() {
+  function clearCanvas(): void {
     cx.clearRect(0, 0, canvasWidth, canvasHeight);
   }
 
-  function calculateCurrentAngleInRadians(timestamp: number) {
+  function calculateCurrentAngleInRadians(timestamp: number): number {
     previousTimestamp = currentTimestamp.value;
     currentTimestamp.value = timestamp;
     const tickInMs = currentTimestamp.value - previousTimestamp;
@@ -129,7 +134,7 @@ const init = () => {
     } as State;
   }
 
-  function drawUnitCircle() {
+  function drawUnitCircle(): void {
     cx.strokeStyle = colorUnitCircle;
     cx.lineWidth = 3.0;
     cx.setLineDash([]);
@@ -142,19 +147,19 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawNorthArrow(x: number, y: number) {
+  function drawNorthArrow(x: number, y: number): void {
     cx.moveTo(x - axisArrowSize, y + axisArrowSize);
     cx.lineTo(x, y);
     cx.lineTo(x + axisArrowSize, y + axisArrowSize);
   }
 
-  function drawEastArrow(x: number, y: number) {
+  function drawEastArrow(x: number, y: number): void {
     cx.moveTo(x - axisArrowSize, y - axisArrowSize);
     cx.lineTo(x, y);
     cx.lineTo(x - axisArrowSize, y + axisArrowSize);
   }
 
-  function drawSineWaveAxes() {
+  function drawSineWaveAxes(): void {
     cx.strokeStyle = colorCoordinateAxes;
     cx.lineWidth = 1.0;
     cx.setLineDash([]);
@@ -172,7 +177,7 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawCoordinateAxes() {
+  function drawCoordinateAxes(): void {
     cx.strokeStyle = colorCoordinateAxes;
     cx.lineWidth = 1.0;
     cx.setLineDash([]);
@@ -192,7 +197,7 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawAxesLabels() {
+  function drawAxesLabels(): void {
     cx.font = "14px 'Courier'";
 
     cx.fillStyle = colorCosAngle;
@@ -213,7 +218,7 @@ const init = () => {
     }
   }
 
-  function drawWaveWithMarkers(state: State, sine: boolean) {
+  function drawWaveWithMarkers(state: State, sine: boolean): void {
     cx.fillStyle = sine ? colorPointY : colorPointX;
 
     cx.beginPath();
@@ -248,14 +253,14 @@ const init = () => {
 
     cx.beginPath();
 
-    cx.arc(waveStartX, sine ? state.y : state.y2, 3, 0, Math.PI * 2, false); // Showing sin(t)!
+    cx.arc(waveStartX, sine ? state.y : state.y2, radiusMarker, 0, Math.PI * 2, false); // Showing sin(t)!
 
     cx.fill();
   }
 
-  function drawRadius(state: State) {
+  function drawRadius(state: State): void {
     cx.strokeStyle = colorRadius;
-    cx.lineWidth = 3.0;
+    cx.lineWidth = lineWidthThickLineHelper;
     cx.setLineDash([]);
 
     cx.beginPath();
@@ -267,7 +272,7 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawAngle(state: State) {
+  function drawAngle(state: State): void {
     cx.strokeStyle = colorAngle;
     cx.lineWidth = 2.0;
     cx.setLineDash([]);
@@ -279,32 +284,32 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawStaticContent() {
+  function drawStaticContent(): void {
     drawCoordinateAxes();
     drawSineWaveAxes();
     drawAxesLabels();
     drawUnitCircle();
   }
 
-  function drawPointOnCircleHelper(color: string, x: number, y: number) {
+  function drawPointOnCircleHelper(color: string, x: number, y: number): void {
     cx.fillStyle = color;
 
     cx.beginPath();
 
-    cx.arc(x, y, 3, 0, Math.PI * 2, false);
+    cx.arc(x, y, radiusMarker, 0, Math.PI * 2, false);
 
     cx.fill();
   }
 
-  function drawPointOnCircle(state: State) {
+  function drawPointOnCircle(state: State): void {
     drawPointOnCircleHelper(colorPoint, state.x, state.y);
   }
 
-  function drawPointForX(state: State) {
+  function drawPointForX(state: State): void {
     drawPointOnCircleHelper(colorPointX, state.x, origoY);
   }
 
-  function drawPointForY(state: State) {
+  function drawPointForY(state: State): void {
     drawPointOnCircleHelper(colorPointY, origoX, state.y);
   }
 
@@ -315,7 +320,7 @@ const init = () => {
     xTo: number,
     yTo: number,
     lineWidth: number,
-  ) {
+  ): void {
     cx.strokeStyle = color;
     cx.lineWidth = lineWidth;
     cx.setLineDash([]);
@@ -329,17 +334,17 @@ const init = () => {
     cx.stroke();
   }
 
-  function drawCosHelper(state: State) {
-    drawLine(colorCosAngle, state.x, origoY, origoX, origoY, 4);
-    drawLine(colorCosAngle, state.x, state.y, origoX, state.y, 1);
+  function drawCosHelper(state: State): void {
+    drawLine(colorCosAngle, state.x, origoY, origoX, origoY, lineWidthThickLineHelper);
+    drawLine(colorCosAngle, state.x, state.y, origoX, state.y, lineWidthThinLineHelper);
   }
 
-  function drawSinHelper(state: State) {
-    drawLine(colorSinAngle, origoX, state.y, origoX, origoY, 4);
-    drawLine(colorSinAngle, state.x, state.y, state.x, origoY, 1);
+  function drawSinHelper(state: State): void {
+    drawLine(colorSinAngle, origoX, state.y, origoX, origoY, lineWidthThickLineHelper);
+    drawLine(colorSinAngle, state.x, state.y, state.x, origoY, lineWidthThinLineHelper);
   }
 
-  function drawDynamicContent(state: State) {
+  function drawDynamicContent(state: State): void {
     if (showSineCurve.value) {
       drawWaveWithMarkers(state, true);
     }
@@ -357,7 +362,7 @@ const init = () => {
     drawPointOnCircle(state);
   }
 
-  function updateLoop(timestamp: number) {
+  function updateLoop(timestamp: number): void {
     window.requestAnimationFrame(updateLoop);
 
     const state = calculateState(timestamp);
@@ -378,6 +383,15 @@ const init = () => {
   <div class="unit-circle">
     <div class="settings">
       <div>
+        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-8" max="8" autofocus />
+        <label for="rpmFactor">
+          Velocity (rounds per minute (logarithmic scale)):
+          <span v-if="rpm !== 0">{{ rpm }}</span>
+          <strong v-else>PAUSED</strong>
+        </label>
+      </div>
+
+      <div>
         <input id="showSineCurve" type="checkbox" v-model="showSineCurve" />
         <label for="showSineCurve"> Show sine curve </label>
       </div>
@@ -390,15 +404,6 @@ const init = () => {
       <div>
         <input id="showAngle" type="checkbox" v-model="showAngle" />
         <label for="showAngle"> Show angle </label>
-      </div>
-
-      <div>
-        <input id="rpmFactor" type="range" v-model="rpmFactor" min="-8" max="8" />
-        <label for="rpmFactor">
-          Velocity (rounds per minute (logarithmic scale)):
-          <span v-if="rpm !== 0">{{ rpm }}</span>
-          <strong v-else>PAUSED</strong>
-        </label>
       </div>
     </div>
 

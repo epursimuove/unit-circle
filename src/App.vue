@@ -17,7 +17,7 @@ const currentYear: number = new Date().getFullYear();
     </div>
 
     <div>
-      NNM Unit circle <small class="meta">{{ appVersion }}</small>
+      NNM Unit circle <var class="meta">{{ appVersion }}</var>
     </div>
   </header>
 
@@ -48,7 +48,7 @@ const currentYear: number = new Date().getFullYear();
 
   <footer>
     <div>
-      <em>NNM Unit circle</em> <small>{{ appVersion }}</small>
+      <em>NNM Unit circle</em> <var>{{ appVersion }}</var>
     </div>
     <div>
       Code repository:
