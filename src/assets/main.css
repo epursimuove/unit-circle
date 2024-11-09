@@ -1,0 +1,72 @@
+@import "./base.css";
+
+#app {
+  margin: 0 1rem;
+  max-width: 840px;
+}
+
+.math {
+  font-family: Courier, monospace;
+}
+
+header {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-block: 1rem;
+}
+
+h1 {
+  margin-top: 2.5rem;
+}
+
+.color-angle {
+  color: #6a6;
+}
+
+.color-sine {
+  color: #66f;
+}
+
+.color-cosine {
+  color: #f66;
+}
+
+.color-radius {
+  color: #dd0;
+}
+
+.color-unit-circle {
+  color: #0dd;
+}
+
+p {
+  .color-angle,
+  .color-sine,
+  .color-cosine,
+  .color-radius,
+  .color-unit-circle {
+    font-weight: bold;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code {
+  font-family: Courier, monospace;
+}
+
+footer {
+  margin: 2rem 0 1rem;
+  font-size: 0.9em;
+  color: hsl(100, 0%, 60%);
+}
+
+.meta {
+  color: hsl(100, 0%, 60%);
+}
