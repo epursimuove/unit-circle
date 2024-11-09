@@ -28,15 +28,19 @@ const currentAngleInDegrees: ComputedRef<string> = computed(() =>
   toFixed((currentAngleInRadians.value * 180) / Math.PI, 0),
 );
 
+const x: ComputedRef<number> = computed(() => Math.cos(currentAngleInRadians.value));
+
+const y: ComputedRef<number> = computed(() => Math.sin(currentAngleInRadians.value));
+
 const toFixed = (number: number, decimals = 2): string => {
   return number.toFixed(decimals);
 };
 
-const showSign = (number: number | string): string => {
+const explicitSign = (number: number | string): string => {
   if (typeof number === "number") {
-    return number < 0 ? "" + number : "+" + number;
+    return number < 0 ? `${number}` : `+${number}`;
   }
-  return number.startsWith("-") ? number : "+" + number;
+  return number.startsWith("-") ? number : `+${number}`;
 };
 
 onMounted(() => {
@@ -417,13 +421,9 @@ const init: () => void = () => {
         {{ toFixed(currentAngleInRadians / Math.PI) }}π rad = {{ currentAngleInDegrees }}°
       </div>
 
-      <div class="math color-cosine">
-        x = cos(&theta;): {{ showSign(toFixed(Math.cos(currentAngleInRadians))) }}
-      </div>
+      <div class="math color-cosine">x = cos(&theta;): {{ explicitSign(toFixed(x)) }}</div>
 
-      <div class="math color-sine">
-        y = sin(&theta;): {{ showSign(toFixed(Math.sin(currentAngleInRadians))) }}
-      </div>
+      <div class="math color-sine">y = sin(&theta;): {{ explicitSign(toFixed(y)) }}</div>
 
       <div class="math">
         <span class="color-radius">1</span>
@@ -431,13 +431,11 @@ const init: () => void = () => {
         = <var class="color-cosine">x</var><sup>2</sup> + <var class="color-sine">y</var
         ><sup>2</sup>
 
-        = <span class="color-cosine">{{ showSign(toFixed(Math.cos(currentAngleInRadians))) }}</span
-        ><sup>2</sup> +
-        <span class="color-sine">{{ showSign(toFixed(Math.sin(currentAngleInRadians))) }}</span
+        = <span class="color-cosine">{{ explicitSign(toFixed(x)) }}</span
+        ><sup>2</sup> + <span class="color-sine">{{ explicitSign(toFixed(y)) }}</span
         ><sup>2</sup>
 
-        = {{ toFixed(Math.pow(Math.cos(currentAngleInRadians), 2)) }} +
-        {{ toFixed(Math.pow(Math.sin(currentAngleInRadians), 2)) }}
+        = {{ toFixed(Math.pow(x, 2)) }} + {{ toFixed(Math.pow(y, 2)) }}
       </div>
 
       <div>Time elapsed: {{ timeElapsedInSeconds }} s</div>
